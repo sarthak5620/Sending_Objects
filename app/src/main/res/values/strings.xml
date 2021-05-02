@@ -1,0 +1,10 @@
+<resources>
+    <string name="app_name">Sending_Objects</string>
+    <string name="Name">Name</string>
+    <string name="Male">Male</string>
+    <string name="Female">Female</string>
+    <string name="Roll_Number">Roll No</string>
+    <string name="Phone_number">Phone No</string>
+    <string name="save">SAVE</string>
+    <string name="Gender">Gender</string>
+</resources>
