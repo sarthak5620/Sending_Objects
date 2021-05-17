@@ -3,17 +3,31 @@ package com.example.android.sending_objects;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.view.View;
+import android.view.inputmethod.EditorInfo;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.android.sending_objects.Models.Student;
 import com.example.android.sending_objects.databinding.ActivityMainBinding;
 
 public class MainActivity extends AppCompatActivity {
+    //keys to access values
+    private static final String STUDENT_NAME = "name";
+    private static final String STUDENT_GENDER = "gender" ;
+    private static final String STUDENT_NUMBER = "number";
+    private static final String STUDENT_ROLL = "roll";
+    String name;
+    public int type;
+    public String gender;
+    public String phoneNumber;
+    public String rollNo;
     ActivityMainBinding b;
+    SharedPreferences preferences ;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -23,6 +37,24 @@ public class MainActivity extends AppCompatActivity {
         setContentView(b.getRoot());
         //call the method to hide error
         setupHideErrorForEditText();
+        b.editName.setOnEditorActionListener(listener);
+        b.editRoll.setOnEditorActionListener(listener);
+        b.editNumber.setOnEditorActionListener(listener);
+         preferences = getPreferences(MODE_PRIVATE);
+        /*
+         * If preferences are not null,assign default values to access the default count value
+         */
+
+        if (preferences != null) {
+            name = preferences.getString(STUDENT_NAME , "");
+            b.editName.setText(name);
+            gender = preferences.getString(STUDENT_GENDER , "");
+            b.radioGroup.check(type);
+            phoneNumber = preferences.getString(STUDENT_NUMBER , "");
+            b.editNumber.setText(phoneNumber);
+            rollNo = preferences.getString(STUDENT_ROLL , "");
+            b.editRoll.setText(rollNo);
+        }
     }
     // Overridden Method called to hide error when the text is changed.We have not used other two methods as they are not needed here
     private void setupHideErrorForEditText() {
@@ -128,5 +160,29 @@ public class MainActivity extends AppCompatActivity {
         Intent intent = new Intent(this, ObjectReceiver.class);
         intent.putExtra(Constants.STUDENT_KEY, student);
         startActivity(intent);
+    }
+
+    private final TextView.OnEditorActionListener listener  = (v, actionId, event) -> {
+        switch (actionId){
+            case EditorInfo.IME_ACTION_NEXT:
+                Toast.makeText(MainActivity.this, "Next", Toast.LENGTH_SHORT).show();
+                break;
+
+            case EditorInfo.IME_ACTION_SEND:
+                Toast.makeText(MainActivity.this, "Send", Toast.LENGTH_SHORT).show();
+        }
+        return false;
+    };
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+
+        preferences.edit()
+                .putString(STUDENT_NAME,name)
+                .putString(STUDENT_GENDER,gender)
+                .putString(STUDENT_NUMBER,phoneNumber)
+                .putString(STUDENT_ROLL,rollNo)
+                .apply();
     }
 }
